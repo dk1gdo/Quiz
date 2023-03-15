@@ -6,4 +6,7 @@
     <string name="answer_2">answer 2</string>
     <string name="answer_3">answer 3</string>
     <string name="answer_4">answer 4</string>
+    <string name="question_number_ui">Вопрос %1$d из %2$d</string>
+    <string name="game_over">Игра окончена!</string>
+    <string name="game_result">Вы ответили на %1d из %2$d вопросов</string>
 </resources>
