@@ -1,12 +1,13 @@
 package com.example.quiz
 
+import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.quiz.data.Question
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -29,7 +30,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         btnAnswer3 = findViewById(R.id.btnAnswer3)
         btnAnswer4 = findViewById(R.id.btnAnswer4)
         fillQuestions()
-        updateUi()
         btnAnswer1.setOnClickListener(this)
         btnAnswer2.setOnClickListener(this)
         btnAnswer3.setOnClickListener(this)
@@ -61,15 +61,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun processAnswer(givenId: Int) {
         if (checkAnswer(givenId)) correctAnswerCount++
         if (!toNextQuestion()) {
-            Toast.makeText(this, "Игра закончена", Toast.LENGTH_SHORT)
-            btnAnswer1.isEnabled = false
-            btnAnswer2.isEnabled = false
-            btnAnswer3.isEnabled = false
-            btnAnswer4.isEnabled = false
-            tvQuestionNumber.text = getString(R.string.game_over)
-            tvQuestionText.text = getString(R.string.game_result, correctAnswerCount, questions.size)
+            if (correctAnswerCount == questions.size) {
+                val intent = Intent(this, ResultActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                askForRestart()
+            }
         }
-
     }
     override fun onClick(v: View?) {
         v?.let {
@@ -82,4 +81,37 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         }
     }
+    private fun askForRestart() = AlertDialog.Builder(this) .run {
+        setTitle(R.string.title_dialog)
+        val messageText = getString(R.string.game_result, correctAnswerCount, questions.size)
+        setMessage(messageText)
+        setNegativeButton(android.R.string.cancel){_,_->
+            finish()
+        }
+        setPositiveButton(android.R.string.ok){_,_ ->
+            currentQuestion = 0
+            correctAnswerCount = 0
+            updateUi()
+        }
+        setCancelable(false)
+        create()
+    }.show()
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("currentQuestion", currentQuestion)
+        outState.putInt("correctAnswerCount", correctAnswerCount)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        currentQuestion = savedInstanceState.getInt("currentQuestion", 0)
+        correctAnswerCount = savedInstanceState.getInt("correctAnswerCount", 0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateUi()
+    }
+
 }

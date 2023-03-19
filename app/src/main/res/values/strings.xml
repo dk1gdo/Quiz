@@ -8,5 +8,9 @@
     <string name="answer_4">answer 4</string>
     <string name="question_number_ui">Вопрос %1$d из %2$d</string>
     <string name="game_over">Игра окончена!</string>
-    <string name="game_result">Вы ответили на %1d из %2$d вопросов</string>
+    <string name="game_result">Вы ответили на %1d из %2$d вопросов. Хотите повторить?</string>
+    <string name="the_end_text">Поздравляем! Вы ответили верно на все вопросы</string>
+    <string name="image_star">Image Star</string>
+    <string name="button_exit">Выход</string>
+    <string name="title_dialog">Ваш результат</string>
 </resources>
